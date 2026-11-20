@@ -8,7 +8,7 @@ A curated collection of reusable skills, runbooks, schemas, and helper scripts f
 
 | Skill | Description | Prerequisites |
 | :--- | :--- | :--- |
-| **[`cf-zero-trust-troubleshooter`](./cf-zero-trust-troubleshooter/SKILL.md)** | Troubleshoot Cloudflare Zero Trust issues (WARP connectivity, Gateway DNS/HTTP/Network blocks, Device Posture failures, Access logins, DEX telemetry, and BISO events) for a specific user or device using the Cloudflare `cf` CLI, Log Explorer SQL API, and Analytics SQL API. | • Cloudflare `cf` CLI (`cf auth`)<br>• `python3` (for JSON parsing in helper script) |
+| **[`cf-zero-trust-troubleshooter`](./cf-zero-trust-troubleshooter/SKILL.md)** | Troubleshoot Cloudflare Zero Trust issues (WARP connectivity, Gateway DNS/HTTP/Network blocks, Network Session TLS/certificate errors, Device Posture failures, Access logins, DEX telemetry, and BISO events) for a specific user or device using **either** the Cloudflare `cf` CLI **or** the Cloudflare Client v4 REST API (`curl`). | • Either Cloudflare `cf` CLI (`cf auth`) **or** `CLOUDFLARE_API_TOKEN` + `curl`<br>• `python3` (for JSON parsing in helper script) |
 
 ---
 
@@ -16,11 +16,11 @@ A curated collection of reusable skills, runbooks, schemas, and helper scripts f
 
 ### 1. Cloudflare Zero Trust Troubleshooter (`cf-zero-trust-troubleshooter`)
 
-Designed to help agents and engineers rapidly investigate user-reported connectivity or security policy issues in Cloudflare Zero Trust without getting tripped up by interactive CLI prompts, SQL dialect mismatches, or dataset schema differences.
+Designed to help agents and engineers rapidly investigate user-reported connectivity, certificate/TLS inspection, or security policy issues in Cloudflare Zero Trust—working seamlessly with **either** the `cf` CLI or direct **Cloudflare Client v4 REST API** calls when `cf` is not installed.
 
-- **[`SKILL.md`](./cf-zero-trust-troubleshooter/SKILL.md):** Core troubleshooting playbook, CLI guardrails (`CLOUDFLARE_ACCOUNT_ID`, raw SQL vs. JSON bodies, lowercase column enforcement, timeout prevention), and targeted diagnostic queries.
-- **[`references/datasets-reference.md`](./cf-zero-trust-troubleshooter/references/datasets-reference.md):** Quick-lookup schema table mapping every Zero Trust Log Explorer dataset (`gateway_dns`, `gateway_http`, `gateway_network`, `device_posture_results`, `access_requests`, `zero_trust_network_sessions`, `warp_toggle_changes`, `warp_config_changes`, `dex_*`, `biso_user_actions`, `audit_logs_v2`) to its exact timestamp column, identity columns, and official Cloudflare documentation.
-- **[`scripts/investigate-user.sh`](./cf-zero-trust-troubleshooter/scripts/investigate-user.sh):** Standalone one-command triage script that resolves a user's active WARP devices and queries the past $N$ hours of DNS blocks, posture evaluations, WARP toggles, HTTP inspection, and Access requests.
+- **[`SKILL.md`](./cf-zero-trust-troubleshooter/SKILL.md):** Core troubleshooting playbook supporting both `cf` CLI and `curl` REST API execution, guardrails (account scoping, raw SQL vs. JSON bodies, response envelope unwrapping, lowercase column enforcement, timeout prevention), TLS/certificate failure interpretation (`CLIENT_TLS_ERROR` vs. `ORIGIN_TLS_ERROR` & `origintlscertificatevalidationresult`), and targeted diagnostic queries.
+- **[`references/datasets-reference.md`](./cf-zero-trust-troubleshooter/references/datasets-reference.md):** Quick-lookup schema table mapping every Zero Trust Log Explorer dataset (`gateway_dns`, `gateway_http`, `gateway_network`, `zero_trust_network_sessions`, `device_posture_results`, `access_requests`, `warp_toggle_changes`, `warp_config_changes`, `dex_*`, `biso_user_actions`, `audit_logs_v2`), TLS diagnostic enum values, `cf` CLI ↔ Client v4 REST API endpoint mappings, and required API Token permissions.
+- **[`scripts/investigate-user.sh`](./cf-zero-trust-troubleshooter/scripts/investigate-user.sh):** Standalone one-command 8-step triage script that auto-detects `cf` CLI or falls back to the Client v4 REST API (`CLOUDFLARE_API_TOKEN`) to query a user's active WARP devices, DNS blocks, L4 network blocks, Network Session TLS/certificate errors, posture evaluations, WARP toggles, HTTP inspection, and Access requests.
 
 ---
 
