@@ -1,0 +1,25 @@
+README.md
+  s_598045632aef73::t_e7ca1b0f390700 12,26-33
+cf1-device-metrics/SKILL.md
+  s_598045632aef73::t_d43a419e521f16 1-217
+cf1-device-metrics/references/dex-schema-reference.md
+  s_598045632aef73::t_7489f2405aeafa 1-220
+cf1-device-metrics/scripts/device-metrics.py
+  s_598045632aef73::t_2a11de1efab420 1-2050
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bb7afa78e28b6b3feaa7e295692172c7633ffc15",
+  "prompts": {},
+  "sessions": {
+    "s_598045632aef73": {
+      "agent_id": {
+        "tool": "devin",
+        "id": "s_598045632aef73",
+        "model": "unknown"
+      },
+      "human_author": "Nico van Niekerk <nico@cloudflare.com>"
+    }
+  }
+}
