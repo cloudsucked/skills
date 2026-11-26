@@ -9,6 +9,7 @@ A curated collection of reusable skills, runbooks, schemas, and helper scripts f
 | Skill | Description | Prerequisites |
 | :--- | :--- | :--- |
 | **[`cf-zero-trust-troubleshooter`](./cf-zero-trust-troubleshooter/SKILL.md)** | Troubleshoot Cloudflare Zero Trust issues (WARP connectivity, Gateway DNS/HTTP/Network blocks, Network Session TLS/certificate errors, Device Posture failures, Access logins, DEX telemetry, and BISO events) for a specific user or device using **either** the Cloudflare `cf` CLI **or** the Cloudflare Client v4 REST API (`curl`). | • Either Cloudflare `cf` CLI (`cf auth`) **or** `CLOUDFLARE_API_TOKEN` + `curl`<br>• `python3` (for JSON parsing in helper script) |
+| **[`cf1-device-metrics`](./cf1-device-metrics/SKILL.md)** | Collect, analyze, and visualize Cloudflare One (WARP / DEX) client telemetry from `dex_device_state_events`—enriched with Physical Device metadata, `dex_application_tests` (HTTP waterfalls & traceroute hops), `warp_toggle_changes`, `warp_config_changes`, and `device_posture_results`—into both a terminal/Markdown sparkline summary and an offline-ready interactive HTML dashboard using **either** `cf` CLI **or** Client v4 REST API. | • Either Cloudflare `cf` CLI (`cf auth`) **or** `CLOUDFLARE_API_TOKEN`<br>• `python3` (stdlib only — zero external packages) |
 
 ---
 
@@ -21,6 +22,14 @@ Designed to help agents and engineers rapidly investigate user-reported connecti
 - **[`SKILL.md`](./cf-zero-trust-troubleshooter/SKILL.md):** Core troubleshooting playbook supporting both `cf` CLI and `curl` REST API execution, guardrails (account scoping, raw SQL vs. JSON bodies, response envelope unwrapping, lowercase column enforcement, timeout prevention), TLS/certificate failure interpretation (`CLIENT_TLS_ERROR` vs. `ORIGIN_TLS_ERROR` & `origintlscertificatevalidationresult`), and targeted diagnostic queries.
 - **[`references/datasets-reference.md`](./cf-zero-trust-troubleshooter/references/datasets-reference.md):** Quick-lookup schema table mapping every Zero Trust Log Explorer dataset (`gateway_dns`, `gateway_http`, `gateway_network`, `zero_trust_network_sessions`, `device_posture_results`, `access_requests`, `warp_toggle_changes`, `warp_config_changes`, `dex_*`, `biso_user_actions`, `audit_logs_v2`), TLS diagnostic enum values, `cf` CLI ↔ Client v4 REST API endpoint mappings, and required API Token permissions.
 - **[`scripts/investigate-user.sh`](./cf-zero-trust-troubleshooter/scripts/investigate-user.sh):** Standalone one-command 8-step triage script that auto-detects `cf` CLI or falls back to the Client v4 REST API (`CLOUDFLARE_API_TOKEN`) to query a user's active WARP devices, DNS blocks, L4 network blocks, Network Session TLS/certificate errors, posture evaluations, WARP toggles, HTTP inspection, and Access requests.
+
+### 2. Cloudflare One Client Device Metrics (`cf1-device-metrics`)
+
+Designed for deep single-device observability on Cloudflare One / WARP clients—working with **either** the `cf` CLI or direct **Cloudflare Client v4 REST API** calls—and rendering correlated metrics both in the terminal and as a self-contained interactive browser dashboard.
+
+- **[`SKILL.md`](./cf1-device-metrics/SKILL.md):** Dual-mode collection and visualization runbook, verified `dex_device_state_events` schema guardrails (exact lowercase columns, nested JSON string parsing, unit normalizations, desktop battery handling), and manual enrichment SQL queries.
+- **[`references/dex-schema-reference.md`](./cf1-device-metrics/references/dex-schema-reference.md):** Complete 59-column `dex_device_state_events` catalog, enrichment schemas (`dex_application_tests`, `warp_toggle_changes`, `warp_config_changes`, `device_posture_results`), MASQUE `tunnelstats*` & `*byapp` JSON formats, health thresholds, and `cf` CLI ↔ Client v4 REST API endpoint mappings.
+- **[`scripts/device-metrics.py`](./cf1-device-metrics/scripts/device-metrics.py):** Zero-dependency Python 3 collector and visualizer that fetches and normalizes device telemetry, runs automated health checks, prints a CLI/Markdown report with Unicode sparklines, and generates a zero-CDN interactive HTML dashboard (`--html`) with synchronized hover crosshairs, HTTP timing waterfalls, expandable traceroute hop tables, and offline `--from-json` rendering.
 
 ---
 
